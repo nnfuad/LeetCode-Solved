@@ -1,0 +1,9 @@
+# Number of Unique XOR Triplets II
+
+**Difficulty:** Medium
+
+**Link:** https://leetcode.com/problems/number-of-unique-xor-triplets-ii/
+
+---
+
+**Problem Understanding:**\nAn XOR triplet is defined as `nums[i] XOR nums[j] XOR nums[k]` where `i ≤ j ≤ k`. Because the XOR operation is commutative and we can reuse the same index (i=j=k), the set of achievable values depends only on the multiset of chosen indices. Crucially, for any three values `a, b, c` taken from the set of distinct numbers `V = {nums[p] | p = 0..n-1}`, we can always find indices `i, j, k` (not necessarily distinct) with those values and `i ≤ j ≤ k`. Therefore the answer equals the number of distinct XOR values of three elements (with repetitions) from `V`.\n\n**Optimal Approach:**\n1. Let `V = list(set(nums))`.\n2. Let `M = max(nums)`. The maximum possible XOR of three numbers is less than `2^{⌊log2 M⌋+1}` ≤ 2048 for the given constraints. Set `limit = 1 << (M.bit_length())`.\n3. Build a bitset `two_bits` representing all XORs of two elements from `V`: `two_bits = 0; for a in V: for b in V: two_bits |= 1 << (a ^ b)`.\n4. Compute all XORs of three elements: iterate over each set bit `t` in `two_bits`, and for each `c in V` set the bit for `t ^ c` in `three_bits`.\n5. The answer is `three_bits.bit_count()`.\n\n**Complexity:**\n- Let `m = |V| ≤ 1500`.\n- Step 3: O(m²) operations.\n- Step 4: O(m·limit) operations, where `limit ≤ 2048`.\n- Overall O(m² + m·limit) ≈ O(5×10⁶), well within limits.\n- Space O(limit) for the bitsets.\n\n**Edge Cases:**\n- Single element: answer is 1.\n- All elements equal: answer is 1.\n- Duplicate values: handled naturally by using the set `V`.\n\n**Solution:**\nThe implementation is provided below.
